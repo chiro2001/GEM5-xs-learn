@@ -118,7 +118,7 @@ BaseCache::BaseCache(const BaseCacheParams &p, unsigned blk_size)
       stats(*this),
       cacheLevel(p.cache_level),
       forceHit(p.force_hit),
-      dumpTagsData(p.dump_tags_data)
+      dumpCache(p.dump_cache)
 {
     // the MSHR queue has no reserve entries as we check the MSHR
     // queue on every single allocation, whereas the write queue has
@@ -169,7 +169,7 @@ BaseCache::BaseCache(const BaseCacheParams &p, unsigned blk_size)
 
     // dump cache data
     registerExitCallback([this]() {
-        if (tags && cacheLevel && dumpTagsData) {
+        if (tags && cacheLevel && dumpCache) {
             tags->dumpTagsData(std::string("L") + std::to_string(cacheLevel) + "TagsData-" + name() + ".txt");
         }
     });

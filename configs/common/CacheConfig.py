@@ -66,6 +66,10 @@ def _get_cache_opts(level, options):
     prefetcher_attr = '{}_hwp_type'.format(level)
     if hasattr(options, prefetcher_attr):
         opts['prefetcher'] = _get_hwp(getattr(options, prefetcher_attr))
+    
+    dump_attr = '{}_dump'.format(level)
+    if hasattr(options, dump_attr):
+        opts['dump_cache'] = getattr(options, dump_attr)
 
     return opts
 
