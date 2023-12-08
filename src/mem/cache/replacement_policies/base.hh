@@ -30,6 +30,7 @@
 #define __MEM_CACHE_REPLACEMENT_POLICIES_BASE_HH__
 
 #include <memory>
+#include <typeinfo>
 
 #include "base/compiler.hh"
 #include "mem/cache/replacement_policies/replaceable_entry.hh"
@@ -110,6 +111,14 @@ class Base : public SimObject
      * @return A shared pointer to the new replacement data.
      */
     virtual std::shared_ptr<ReplacementData> instantiateEntry() = 0;
+
+    /**
+     * @return Name of this policy, default to className.
+     */
+    virtual const char* policyName() const
+    {
+        return typeid(*this).name();
+    }
 };
 
 } // namespace replacement_policy

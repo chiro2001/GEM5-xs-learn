@@ -251,6 +251,8 @@ class BaseSetAssoc : public BaseTags
         }
         return false;
     }
+
+    void dumpTagsData(const std::string &path) override;
 };
 
 } // namespace gem5

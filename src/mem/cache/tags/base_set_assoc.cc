@@ -46,8 +46,10 @@
 #include "mem/cache/tags/base_set_assoc.hh"
 
 #include <string>
+#include <typeinfo>
 
 #include "base/intmath.hh"
+#include "base/output.hh"
 
 namespace gem5
 {
@@ -107,6 +109,34 @@ BaseSetAssoc::moveBlock(CacheBlk *src_blk, CacheBlk *dest_blk)
     // the one that is being moved.
     replacementPolicy->invalidate(src_blk->replacementData);
     replacementPolicy->reset(dest_blk->replacementData);
+}
+
+void
+BaseSetAssoc::dumpTagsData(const std::string &path)
+{
+    auto out_handle = simout.create(path);
+    auto sets = indexingPolicy->getSets();
+    *out_handle->stream() << "# Dumping Set-Assoc Cache Data " << typeid(*this).name()
+        << ", replacement policy: " << replacementPolicy->policyName() << std::endl << std::endl;
+    for (int i = 0; i < sets.size(); i++) {
+        auto &cur_set = sets[i];
+        std::vector<ReplaceableEntry*> entries = {cur_set.begin(), cur_set.end()};
+        *out_handle->stream() << "---------- Set " << i << " Data ----------" << std::endl;
+        // dump the least important entry first
+        while (!entries.empty()) {
+            ReplaceableEntry *victim = replacementPolicy->getVictim(entries);
+            fatal_if(victim == nullptr, "Failed to get victim in replacement policy!");
+            *out_handle->stream() << victim->print() << std::endl;
+            // remove this entry
+            entries.erase(
+                std::remove_if(
+                    entries.begin(), entries.end(),
+                    [victim](auto p) { return p == victim; }),
+                entries.end());
+        }
+        *out_handle->stream() << std::endl;
+    }
+    simout.close(out_handle);
 }
 
 } // namespace gem5

@@ -158,6 +158,15 @@ class BaseIndexingPolicy : public SimObject
      */
     virtual Addr regenerateAddr(const Addr tag, const ReplaceableEntry* entry)
                                                                     const = 0;
+    
+    /**
+     * Get sets data
+     */
+    const std::vector<std::vector<ReplaceableEntry*>> &
+    getSets() const
+    {
+      return sets;
+    }
 };
 
 } // namespace gem5

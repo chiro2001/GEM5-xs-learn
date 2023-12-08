@@ -167,7 +167,7 @@ BaseCache::BaseCache(const BaseCacheParams &p, unsigned blk_size)
         });
     }
 
-    // dump
+    // dump cache data
     registerExitCallback([this]() {
         if (tags && cacheLevel && dumpTagsData) {
             tags->dumpTagsData(std::string("L") + std::to_string(cacheLevel) + "TagsData-" + name() + ".txt");
