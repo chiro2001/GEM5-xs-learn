@@ -77,6 +77,7 @@
 #include "sim/serialize.hh"
 #include "sim/sim_exit.hh"
 #include "sim/system.hh"
+#include "debug/CacheMiss.hh"
 
 namespace gem5
 {
@@ -1355,6 +1356,10 @@ class BaseCache : public ClockedObject
     {
         assert(pkt->req->requestorId() < system->maxRequestors());
         stats.cmdStats(pkt).misses[pkt->req->requestorId()]++;
+        DPRINTF(CacheMiss, "cacheMiss at va:%#x pa:%#x, missCount=%d\n",
+            (pkt->req->hasVaddr() ? pkt->req->getVaddr() : 0),
+            (pkt->req->hasPaddr() ? pkt->req->getPaddr() : 0),
+            missCount);
         pkt->req->incAccessDepth();
         if (missCount) {
             --missCount;
