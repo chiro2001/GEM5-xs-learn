@@ -363,6 +363,11 @@ class BaseTags : public ClockedObject
      * @param blk The input block
      */
     void computeStatsVisitor(CacheBlk &blk);
+  public:
+    /**
+     * Dump tags & data to file
+     */
+    virtual void dumpTagsData(const std::string &path);
 };
 
 } // namespace gem5

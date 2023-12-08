@@ -1459,6 +1459,8 @@ class BaseCache : public ClockedObject
 
     const bool forceHit;
 
+    bool dumpTagsData{};
+
 public:
     unsigned level() { return cacheLevel; }
 };

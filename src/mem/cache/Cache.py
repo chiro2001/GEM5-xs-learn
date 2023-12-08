@@ -157,6 +157,8 @@ class BaseCache(ClockedObject):
     cache_level = Param.Unsigned(0, "Cache level (L1 is 1, L2 is 2, etc.)")
 
     force_hit = Param.Bool(False, "Force some PC to hit in L1")
+    
+    dump_tags_data = Param.Bool(True, "Dump data when exit")
 
 class Cache(BaseCache):
     type = 'Cache'

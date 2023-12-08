@@ -54,6 +54,7 @@
 #include "sim/core.hh"
 #include "sim/sim_exit.hh"
 #include "sim/system.hh"
+#include "base/output.hh"
 
 namespace gem5
 {
@@ -305,6 +306,17 @@ BaseTags::BaseTagStats::preDumpStats()
     statistics::Group::preDumpStats();
 
     tags.computeStats();
+}
+
+void
+BaseTags::dumpTagsData(const std::string &path)
+{
+    auto out_handle = simout.create(path);
+    forEachBlk([this, &out_handle](CacheBlk &blk) {
+        // TODO: dump cache in specificated order
+        *out_handle->stream() << blk.print() << std::endl;
+    });
+    simout.close(out_handle);
 }
 
 } // namespace gem5
