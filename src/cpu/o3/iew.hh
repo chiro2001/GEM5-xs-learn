@@ -517,6 +517,10 @@ class IEW
         /** Distribution of number of dispatch stall reasons each tick. */
 
         statistics::Vector dispatchStallReason;
+
+        /** Distribution of number of load instructions each tick. */
+        statistics::Vector issuedLoadInstructions;
+        statistics::Distribution issuedLoadInstructionsDisp;
     } iewStats;
 
     std::vector<StallReason> dispatchStalls;

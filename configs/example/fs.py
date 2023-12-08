@@ -423,6 +423,11 @@ np = args.num_cpus
 
 test_sys = build_test_system(np)
 
+# for i in range(len(test_sys.cpu)):
+#     test_sys.cpu[i].icache.writeback_clean = True
+#     test_sys.cpu[i].dcache.writeback_clean = True
+# test_sys.l2.writeback_clean = True
+
 if args.generic_rv_cpt is not None:
     assert(buildEnv['TARGET_ISA'] == "riscv")
     assert(args.xiangshan_system)

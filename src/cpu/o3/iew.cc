@@ -207,7 +207,11 @@ IEW::IEWStats::IEWStats(CPU *cpu)
     ADD_STAT(renameStallReason, statistics::units::Count::get(),
              "Number of rename stall reasons each tick (Total)"),
     ADD_STAT(dispatchStallReason, statistics::units::Count::get(),
-             "Number of dispatch stall reasons each tick (Total)")
+             "Number of dispatch stall reasons each tick (Total)"),
+    ADD_STAT(issuedLoadInstructions, statistics::units::Count::get(),
+             "Number of load instructions each tick (Total)"),
+    ADD_STAT(issuedLoadInstructionsDisp, 
+             "Distribution of number of load instructions each tick (Total)")
 {
     instsToCommit
         .init(cpu->numThreads)
@@ -265,6 +269,14 @@ IEW::IEWStats::IEWStats(CPU *cpu)
     dispatchStallReason
             .init(NumStallReasons)
             .flags(statistics::total);
+    
+    issuedLoadInstructions
+            .init(8)
+            .flags(statistics::total);
+    
+    issuedLoadInstructionsDisp
+        .init(0, 8, 1)
+        .flags(statistics::total);
 
     std::map <StallReason, const char*> stallReasonStr = {
         {StallReason::NoStall, "NoStall"},
@@ -1037,6 +1049,8 @@ IEW::dispatchInsts(ThreadID tid)
     std::queue<StallReason> dispatch_stalls;
     StallReason breakDispatch = StallReason::NoStall;
 
+    int dis_load_cnt = 0;
+
     // Loop through the instructions, putting them in the instruction
     // queue.
     for ( ; dis_num_inst < insts_to_add &&
@@ -1186,6 +1200,8 @@ IEW::dispatchInsts(ThreadID tid)
 
             ++iewStats.dispLoadInsts;
 
+            dis_load_cnt++;
+
             add_to_iq = true;
 
             toRename->iewInfo[tid].dispatchedToLQ++;
@@ -1267,6 +1283,10 @@ IEW::dispatchInsts(ThreadID tid)
 #endif
         ppDispatch->notify(inst);
     }
+
+    assert(dis_load_cnt < 8);
+    ++iewStats.issuedLoadInstructions[dis_load_cnt];
+    iewStats.issuedLoadInstructionsDisp.sample(dis_load_cnt);
 
     unsigned instInSufficient = dispatch_width - insts_to_add;
     StallReason stallFromRename = StallReason::NoStall;
