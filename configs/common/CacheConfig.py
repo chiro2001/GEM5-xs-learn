@@ -72,6 +72,13 @@ def _get_cache_opts(level, options):
         opts['dump_cache'] = getattr(options, dump_attr)
     if hasattr(options, 'dump_cache'):
         opts['dump_cache'] = getattr(options, 'dump_cache')
+    
+    if hasattr(options, 'observe_cache_miss'):
+        val = getattr(options, 'observe_cache_miss')
+        val = ''.join(val) if val is not None else ''
+        val_list = val.split(',') if val is not None else []
+        if level in val_list:
+            opts['print_miss'] = True
 
     return opts
 

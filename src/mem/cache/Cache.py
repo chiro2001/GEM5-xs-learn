@@ -159,6 +159,8 @@ class BaseCache(ClockedObject):
     force_hit = Param.Bool(False, "Force some PC to hit in L1")
     
     dump_cache = Param.Bool(False, "Dump cache data when exit")
+    
+    print_miss = Param.Bool(False, "Print debug log when miss")
 
 class Cache(BaseCache):
     type = 'Cache'

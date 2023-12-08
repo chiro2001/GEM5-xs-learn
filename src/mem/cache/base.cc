@@ -118,7 +118,8 @@ BaseCache::BaseCache(const BaseCacheParams &p, unsigned blk_size)
       stats(*this),
       cacheLevel(p.cache_level),
       forceHit(p.force_hit),
-      dumpCache(p.dump_cache)
+      dumpCache(p.dump_cache),
+      printMiss(p.print_miss)
 {
     // the MSHR queue has no reserve entries as we check the MSHR
     // queue on every single allocation, whereas the write queue has

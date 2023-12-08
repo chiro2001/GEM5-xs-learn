@@ -1356,10 +1356,12 @@ class BaseCache : public ClockedObject
     {
         assert(pkt->req->requestorId() < system->maxRequestors());
         stats.cmdStats(pkt).misses[pkt->req->requestorId()]++;
-        DPRINTF(CacheMiss, "cacheMiss at va:%#x pa:%#x, missCount=%d\n",
-            (pkt->req->hasVaddr() ? pkt->req->getVaddr() : 0),
-            (pkt->req->hasPaddr() ? pkt->req->getPaddr() : 0),
-            missCount);
+        if (printMiss) {
+            DPRINTF(CacheMiss, "cacheMiss at va:%#x pa:%#x, missCount=%d\n",
+                (pkt->req->hasVaddr() ? pkt->req->getVaddr() : 0),
+                (pkt->req->hasPaddr() ? pkt->req->getPaddr() : 0),
+                missCount);
+        }
         pkt->req->incAccessDepth();
         if (missCount) {
             --missCount;
@@ -1465,6 +1467,8 @@ class BaseCache : public ClockedObject
     const bool forceHit;
 
     bool dumpCache{};
+
+    bool printMiss{};
 
 public:
     unsigned level() { return cacheLevel; }

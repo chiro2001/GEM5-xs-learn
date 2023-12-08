@@ -166,6 +166,8 @@ def addNoISAOptions(parser):
     parser.add_argument("--l3_dump", action='store_true')
     parser.add_argument("--dump-cache", action='store_true',
                         help="dump all caches when exit")
+    parser.add_argument("--observe-cache-miss", type=str, action='append',
+        help="Print debug logs when these caches miss")
 
     # Enable Ruby
     parser.add_argument("--ruby", action="store_true")
