@@ -219,7 +219,9 @@ InstructionQueue::IQStats::IQStats(CPU *cpu, const unsigned &total_width)
     ADD_STAT(fuBusy, statistics::units::Count::get(), "FU busy when requested"),
     ADD_STAT(fuBusyRate, statistics::units::Rate<
                 statistics::units::Count, statistics::units::Count>::get(),
-             "FU busy rate (busy events/executed inst)")
+             "FU busy rate (busy events/executed inst)"),
+    ADD_STAT(instDepDistance, statistics::units::Count::get(),
+             "Distribution of dependent instructions")
 {
     instsAdded
         .prereq(instsAdded);
@@ -325,6 +327,10 @@ InstructionQueue::IQStats::IQStats(CPU *cpu, const unsigned &total_width)
         .flags(statistics::total)
         ;
     fuBusyRate = fuBusy / instsIssued;
+
+    instDepDistance
+        .init(0, 80, 10)
+        .flags(statistics::total);
 }
 
 InstructionQueue::IQIOStats::IQIOStats(statistics::Group *parent)
@@ -1469,6 +1475,17 @@ InstructionQueue::addToDependents(const DynInstPtr &new_inst)
                         src_reg->className());
 
                 dependGraph.insert(src_reg->flatIndex(), new_inst);
+                auto entry = &dependGraph.getDependGraphEntry(src_reg->flatIndex());
+                auto prev = entry->next;
+                while (prev != nullptr) {
+                    if (new_inst->seqNum > prev->inst->seqNum) {
+                        auto distance = new_inst->seqNum - prev->inst->seqNum;
+                        DPRINTF(IQ, "distance %d (cur %d, prev %d)\n",
+                            distance, new_inst->seqNum, prev->inst->seqNum);
+                        iqStats.instDepDistance.sample(distance);
+                    }
+                    prev = prev->next;
+                }
 
                 // Change the return value to indicate that something
                 // was added to the dependency graph.

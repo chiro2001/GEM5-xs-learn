@@ -562,6 +562,9 @@ class InstructionQueue
         statistics::Vector fuBusy;
         /** Number of times the FU was busy per instruction issued. */
         statistics::Formula fuBusyRate;
+
+        /** Distribution of dependent instructions */
+        statistics::Distribution instDepDistance;
     } iqStats;
 
    public:

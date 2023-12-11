@@ -139,6 +139,10 @@ class DependencyGraph
     uint64_t nodesTraversed;
     // Debug variable, remove when done testing.
     uint64_t nodesRemoved;
+
+  public:
+    // get DepEntry of register
+    const DepEntry& getDependGraphEntry(RegIndex idx) const { return dependGraph[idx]; }
 };
 
 template <class DynInstPtr>
